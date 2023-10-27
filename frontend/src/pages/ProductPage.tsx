@@ -5,18 +5,17 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { ApiError } from '../types/ApiError';
 import { getError } from '../utils';
-import { Row, Col, ListGroup } from 'react-bootstrap';
+import { Row, Col, ListGroup, Card, Badge, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
 
 export default function ProductPage() {
-
-	const params = useParams()
-	const { slug } = params
+	const params = useParams();
+	const { slug } = params;
 	const {
 		data: product,
 		isLoading,
 		error,
-	} = useGetProductDetailsBySlugQuery(slug!)
+	} = useGetProductDetailsBySlugQuery(slug!);
 
 	return isLoading ? (
 		<LoadingBox />
@@ -55,7 +54,45 @@ export default function ProductPage() {
 						</ListGroup.Item>
 					</ListGroup>
 				</Col>
-				<Col md={3}></Col>
+				<Col md={3}>
+					<Card>
+						<Card.Body>
+							<ListGroup variant='flush'>
+								<ListGroup.Item>
+									<Row>
+										<Col>Price</Col>
+										<Col>${product.price}</Col>
+									</Row>
+								</ListGroup.Item>
+								<ListGroup.Item>
+									<Row>
+										<Col>Status:</Col>
+										<Col>
+											{product.countInStock > 0 ? (
+												<Badge bg='success'>
+													In stock
+												</Badge>
+											) : (
+												<Badge bg='danger'>
+													Unavailable
+												</Badge>
+											)}
+										</Col>
+									</Row>
+								</ListGroup.Item>
+								{product.countInStock > 0 && (
+									<ListGroup.Item>
+										<div className='d-grid'>
+											<Button variant='primary'>
+												Add to Card
+											</Button>
+										</div>
+									</ListGroup.Item>
+								)}
+							</ListGroup>
+						</Card.Body>
+					</Card>
+				</Col>
 			</Row>
 		</div>
 	);

@@ -33,7 +33,7 @@ export const sampleProducts: Product[] = [
 		category: 'A',
 		brand: 'Gravi',
 		price: 100,
-		countInStock: 18,
+		countInStock: 0,
 		description: 'high quality product',
 		rating: 4.0,
 		numReviews: 43,
