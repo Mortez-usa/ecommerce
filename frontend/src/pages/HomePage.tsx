@@ -1,88 +1,29 @@
 import { Row, Col } from 'react-bootstrap';
-import { sampleProducts } from '../data';
-import { Link } from 'react-router-dom';
-import { Product } from '../types/Product';
-import { useEffect, useReducer } from 'react';
-import axios from 'axios';
-import { getError } from '../utils.ts';
-import { ApiError } from '../types/ApiError.ts';
 import LoadingBox from '../components/LoadingBox.tsx';
 import MessageBox from '../components/MessageBox.tsx';
+import ProductItem from '../components/ProductItem.tsx';
+import { Helmet } from 'react-helmet-async';
+import { useGetProductsQuery } from '../hooks/productHooks.ts';
+import { ApiError } from '../types/ApiError.ts';
+import { getError } from '../utils'
 
-interface State {
-	products: Product[];
-	loading: boolean;
-	error: string;
-}
-
-type Action =
-	| { type: 'FETCH_REQUEST' }
-	| {
-			type: 'FETCH_SUCCESS';
-			payload: Product[];
-	}
-	| { type: 'FETCH_FAIL'; payload: string };
-
-const initialState: State = {
-	products: [],
-	loading: true,
-	error: '',
-};
-
-const reducer = (state: State, action: Action) => {
-	switch (action.type) {
-		case 'FETCH_REQUEST':
-			return { ...state, loading: true };
-		case 'FETCH_SUCCESS':
-			return { ...state, products: action.payload, loading: false };
-		case 'FETCH_FAIL':
-			return { ...state, loading: false, error: action.payload };
-		default:
-			return state;
-	}
-};
 
 export default function HomePage() {
-	const [{ loading, error, products }, dispatch] = useReducer<
-		React.Reducer<State, Action>
-	>(reducer, initialState);
+
 	// const { featuredProducts, latestProducts } = products
-
-	useEffect(() => {
-		const fetchData = async () => {
-			dispatch({ type: 'FETCH_REQUEST' });
-			try {
-				const result = await axios.get(
-					'http://localhost:4000/api/products'
-				);
-				dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
-			} catch (err) {
-				dispatch({
-					type: 'FETCH_FAIL',
-					payload: getError(err as ApiError),
-				});
-			}
-		};
-		fetchData();
-	}, []);
-
-	return loading ? (
+	const { data: products, isLoading, error } = useGetProductsQuery()
+	return isLoading ? (
 		<LoadingBox />
 	) : error ? (
-		<MessageBox variant='danger'>{error}</MessageBox>
+		<MessageBox variant='danger'>{getError(error as ApiError)}</MessageBox>
 	) : (
 		<Row>
-			{sampleProducts.map((product) => (
+			<Helmet>
+				<title>Gravi</title>
+			</Helmet>
+			{products!.map((product) => (
 				<Col key={product.slug} sm={6} md={3} lg={4}>
-					<Link to={'/product/' + product.slug}>
-						<img
-							src={product.image}
-							alt={product.name}
-							className='product-image'
-						/>
-						<h2>{product.name}</h2>
-					</Link>
-					<p>${product.price}</p>
+					<ProductItem product={product} />
 				</Col>
 			))}
 		</Row>
