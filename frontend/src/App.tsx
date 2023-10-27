@@ -1,5 +1,4 @@
-import { Col, Container, Navbar, Row } from 'react-bootstrap';
-import { sampleProducts } from './data.tsx';
+import { Container, Navbar } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
 
 function App() {

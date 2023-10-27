@@ -1,5 +1,6 @@
 import { Product } from "./types/Product";
 
+
 export const sampleProducts: Product[] = [
 	{
 		name: 'Gravi slim Tshirt',

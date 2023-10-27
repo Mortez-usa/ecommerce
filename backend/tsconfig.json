@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2015", // set to the *lowest* target you support
+		"strict": true,
+		"esModuleInterop": true,
+		"outDir": "./build"
+	}
+}
